@@ -1,0 +1,105 @@
+{
+  "name": "vnc",
+  "displayName": "VNC",
+  "description": "VNC Client for VSCode",
+  "version": "0.1.0",
+  "publisher": "Google",
+  "repository": "https://github.com/google/vscode-vnc",
+  "author": "ChromiumOS Authors",
+  "license": "BSD-3-Clause",
+  "engines": {
+    "vscode": "^1.92.0",
+    "node": ">=20"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vnc.connect",
+        "category": "VNC",
+        "title": "Connect"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "wireit",
+    "lint": "wireit",
+    "fix": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "dependencies": [
+        "build-extension",
+        "build-webview"
+      ]
+    },
+    "build-extension": {
+      "command": "esbuild src/extension.ts --bundle --sourcemap --platform=node --target=node20 --packages=external --outfile=dist/extension.js",
+      "output": [
+        "dist/extension.js",
+        "dist/extension.js.map"
+      ]
+    },
+    "build-webview": {
+      "command": "mkdir -p dist/webview && cp -r webview/static dist/webview/static && esbuild webview/src/vnc.ts --bundle --sourcemap --platform=browser --target=chrome124 --outfile=dist/webview/vnc.js",
+      "output": [
+        "dist/webview"
+      ]
+    },
+    "lint": {
+      "dependencies": [
+        "lint-code",
+        "lint-json",
+        "lint-license"
+      ]
+    },
+    "lint-code": {
+      "command": "gts lint"
+    },
+    "lint-json": {
+      "command": "prettier '**/*.json' !package-lock.json --check --ignore-path .gitignore"
+    },
+    "lint-license": {
+      "command": "jsgl --local ."
+    },
+    "fix": {
+      "dependencies": [
+        "fix-code",
+        "fix-json"
+      ]
+    },
+    "fix-code": {
+      "command": "gts fix"
+    },
+    "fix-json": {
+      "command": "prettier '**/*.json' !package-lock.json --write --ignore-path .gitignore"
+    }
+  },
+  "dependencies": {
+    "@novnc/novnc": "^1.4.0",
+    "js-base64": "^3.7.5",
+    "ws": "^8.15.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.1",
+    "@types/vscode-webview": "^1.57.4",
+    "@types/ws": "^8.5.10",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vscode/codicons": "^0.0.35",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.22.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "gts": "^4.0.1",
+    "js-green-licenses": "^4.0.0",
+    "typescript": "^5.3.3",
+    "wireit": "^0.14.9"
+  }
+}
