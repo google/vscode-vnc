@@ -5,11 +5,18 @@
 import * as vscode from 'vscode';
 import {registerCommands} from './commands';
 
-export type ExtensionApi = {};
+export type ExtensionApi = {
+  // ExtensionContext passed to the activation function.
+  // Available only when the extension is activated for testing.
+  context?: vscode.ExtensionContext;
+};
 
 export async function activate(
   context: vscode.ExtensionContext
 ): Promise<ExtensionApi> {
   registerCommands(context);
-  return {};
+  return {
+    context:
+      context.extensionMode === vscode.ExtensionMode.Test ? context : undefined,
+  };
 }

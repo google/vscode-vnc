@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "wireit",
+    "test": "wireit",
     "lint": "wireit",
     "fix": "wireit"
   },
@@ -34,7 +35,8 @@
     "build": {
       "dependencies": [
         "build-extension",
-        "build-webview"
+        "build-webview",
+        "build-tests"
       ]
     },
     "build-extension": {
@@ -48,6 +50,21 @@
       "command": "mkdir -p dist/webview && cp -r webview/static dist/webview/static && esbuild webview/src/vnc.ts --bundle --sourcemap --platform=browser --target=chrome124 --outfile=dist/webview/vnc.js",
       "output": [
         "dist/webview"
+      ]
+    },
+    "build-tests": {
+      "command": "esbuild 'src/**/*.ts' --sourcemap --format=cjs --platform=node --target=node20 --outdir=out",
+      "output": [
+        "out"
+      ]
+    },
+    "test": {
+      "command": "xvfb-run -a node ./out/tests/runTest.js",
+      "dependencies": [
+        "build"
+      ],
+      "output": [
+        ".vscode-test/user-data"
       ]
     },
     "lint": {
@@ -97,7 +114,9 @@
     "eslint": "^8.55.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "glob": "^8.1.0",
     "gts": "^4.0.1",
+    "jasmine": "^5.1.0",
     "js-green-licenses": "^4.0.0",
     "typescript": "^5.3.3",
     "wireit": "^0.14.9"
