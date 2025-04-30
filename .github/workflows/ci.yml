@@ -1,0 +1,44 @@
+# Copyright 2025 The ChromiumOS Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: CI
+
+on:
+  push:
+    branches:
+      - "main"
+      - "v*.*.x"
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - "main"
+      - "v*.*.x"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.1
+      - run: go install github.com/google/addlicense@dc31ac9ffcca99c9457226366135701794b128c0  # v1.1.1
+      - run: addlicense -check .
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: npm ci
+      - run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: npm ci
+      - run: npm run build
+      - run: npx vsce package
