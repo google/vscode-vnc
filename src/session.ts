@@ -161,7 +161,9 @@ export class VncSession implements vscode.Disposable {
       const proxyHttpUrl = await vscode.env.asExternalUri(
         vscode.Uri.parse(`http://localhost:${proxy.listenPort}/`)
       );
-      proxyUrl = proxyHttpUrl.with({scheme: 'ws'}).toString();
+      proxyUrl = proxyHttpUrl
+        .with({scheme: proxyHttpUrl.scheme === 'https' ? 'wss' : 'ws'})
+        .toString();
     }
     webview.html = VncSession.getWebviewContent(webview, proxyUrl, context);
   }
