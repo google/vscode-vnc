@@ -6,22 +6,23 @@ import * as vscode from 'vscode';
 import {VncSession} from './session';
 
 async function commandConnect(context: vscode.ExtensionContext): Promise<void> {
-  const hostname = await vscode.window.showInputBox({
+  const hostnameInput = await vscode.window.showInputBox({
     prompt: 'Enter VNC host name',
     placeHolder: 'localhost',
   });
-  if (!hostname) {
+  if (hostnameInput === undefined) {
     return;
   }
+  const hostname = hostnameInput || 'localhost';
 
-  const portStr = await vscode.window.showInputBox({
+  const portInput = await vscode.window.showInputBox({
     prompt: 'Enter VNC port',
     placeHolder: '5900',
   });
-  if (!portStr) {
+  if (portInput === undefined) {
     return;
   }
-  const port = Number(portStr);
+  const port = Number(portInput || '5900');
   if (isNaN(port)) {
     void vscode.window.showErrorMessage('Invalid port number');
     return;
